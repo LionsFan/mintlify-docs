@@ -1,12 +1,12 @@
 # Agent Style Guide
 
 ## Product
-- Product name: **Sales CoPilot**
+- Product name: **AI Presentations**
 - Company: **Demand IQ**
-- Always refer to the product as "Sales CoPilot" (not "the app", "the tool", or "ai-presentations-demo")
+- Always refer to the product as "AI Presentations" (not "the app", "the tool", or "ai-presentations-demo")
 
 ## Audience
-These docs are written for **external customers** — people evaluating or actively using Sales CoPilot. They are not internal developers. Write as if the reader is technical enough to integrate an API but unfamiliar with how Demand IQ's systems work internally.
+These docs are written for **external customers** — people evaluating or actively using AI Presentations. They are not internal developers. Write as if the reader is technical enough to integrate an API but unfamiliar with how Demand IQ's systems work internally.
 
 ## Tone & Language
 - Plain English. No internal jargon, no acronyms without explanation.

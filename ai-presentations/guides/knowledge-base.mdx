@@ -1,13 +1,13 @@
 ---
 title: Knowledge base
-description: Upload company documents and configure your AI profile to improve how Sales CoPilot answers customer questions.
+description: Upload company documents and configure your AI profile to improve how AI Presentations answers customer questions.
 ---
 
-The knowledge base gives Sales CoPilot deeper knowledge about your company, products, and services. When a homeowner asks a question that isn't covered by your FAQs, Sales CoPilot searches your knowledge base documents for relevant information and uses it to generate a more accurate, on-brand answer.
+The knowledge base gives AI Presentations deeper knowledge about your company, products, and services. When a homeowner asks a question that isn't covered by your FAQs, AI Presentations searches your knowledge base documents for relevant information and uses it to generate a more accurate, on-brand answer.
 
 ## Company profile
 
-The knowledge base profile tells Sales CoPilot how to represent your company when answering questions. Open the **Settings** page to configure these fields:
+The knowledge base profile tells AI Presentations how to represent your company when answering questions. Open the **Settings** page to configure these fields:
 
 - **Tagline** — a short description of your company, e.g. "Arizona's #1 rated solar installer since 2015"
 - **About** — a paragraph about what your company does, your specialties, and what sets you apart
@@ -17,9 +17,9 @@ The knowledge base profile tells Sales CoPilot how to represent your company whe
 - **Assistant name** — the default name your AI assistant uses in Q&A when a deck doesn't set its own (`assistantName` in the API).
 - **Greeting** — the default first message the assistant sends when a deck doesn't set its own (`greeting` in the API).
 
-These fields are used as context whenever Sales CoPilot generates an answer, so they influence the tone and content of every AI response.
+These fields are used as context whenever AI Presentations generates an answer, so they influence the tone and content of every AI response.
 
-Assistant name and greeting are company-wide defaults. If a deck sets its own **Assistant Name** or **Initial Greeting Message** under [Branding](/sales-copilot/guides/branding), those deck-level values win. Otherwise the presentation viewer falls back to the company profile values here, so onboarding a new company gives every deck a sensible identity out of the box.
+Assistant name and greeting are company-wide defaults. If a deck sets its own **Assistant Name** or **Initial Greeting Message** under [Branding](/ai-presentations/guides/branding), those deck-level values win. Otherwise the presentation viewer falls back to the company profile values here, so onboarding a new company gives every deck a sensible identity out of the box.
 
 <Note>
 `PUT /api/company/kb/profile` writes only the fields present in the request body. Omitted fields are left untouched, and sending `null` clears a field. Callers can safely update one setting without needing to re-send the rest of the profile.
@@ -45,10 +45,10 @@ Maximum file size is 25 MB per document.
 
 Document upload is a two-step process:
 
-1. **Initiate** — you tell Sales CoPilot about the file (name, type, size) and receive a presigned upload URL
-2. **Upload and complete** — you upload the file directly to storage using the presigned URL, then notify Sales CoPilot that the upload is finished
+1. **Initiate** — you tell AI Presentations about the file (name, type, size) and receive a presigned upload URL
+2. **Upload and complete** — you upload the file directly to storage using the presigned URL, then notify AI Presentations that the upload is finished
 
-After you complete the upload, Sales CoPilot automatically processes the document in the background:
+After you complete the upload, AI Presentations automatically processes the document in the background:
 
 - Extracts text from the document
 - Splits it into smaller chunks
@@ -68,7 +68,7 @@ You can check the document status to track processing progress. Status values ar
 
 When a homeowner asks a question during a presentation:
 
-1. Sales CoPilot first checks your **FAQs** for an exact or semantic match
+1. AI Presentations first checks your **FAQs** for an exact or semantic match
 2. If no FAQ matches, it searches your **knowledge base documents** for relevant passages
 3. It combines the relevant passages with the current **slide context** and your **company profile**
 4. The AI generates an answer using all of this context

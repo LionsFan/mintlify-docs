@@ -9,17 +9,17 @@ This guide shows the fastest way to turn a lead into a personalized presentation
 Prospect ID or prospect details  →  Create Presentation API  →  Link for that prospect
 ```
 
-You send Sales CoPilot a Demand IQ prospect ID (when the lead already exists in Demand IQ), the prospect's details (name, address, contact info), or both, and you get back a shareable URL. Open that URL and the prospect sees your branded, narrated presentation — personalized with their name and address.
+You send AI Presentations a Demand IQ prospect ID (when the lead already exists in Demand IQ), the prospect's details (name, address, contact info), or both, and you get back a shareable URL. Open that URL and the prospect sees your branded, narrated presentation — personalized with their name and address.
 
 It's written for two audiences:
 
-- **Developers** integrating Sales CoPilot into a CRM, lead platform, or backend — follow the numbered steps with the `curl` examples.
+- **Developers** integrating AI Presentations into a CRM, lead platform, or backend — follow the numbered steps with the `curl` examples.
 - **Non-technical users automating with Zapier** — read [How it works](#how-it-works) and [Key terms](#key-terms-for-non-technical-readers), then jump to the [Zapier walkthrough](#zapier-walkthrough-no-code), which spells out every field to fill in.
 
 <Note>
   This guide assumes you already have a template with slides. If you don't yet,
-  build one in the dashboard first ([Quickstart](/sales-copilot/quickstart)) or
-  over the API ([API Quickstart](/sales-copilot/api-quickstart)).
+  build one in the dashboard first ([Quickstart](/ai-presentations/quickstart)) or
+  over the API ([API Quickstart](/ai-presentations/api-quickstart)).
 </Note>
 
 ## How it works
@@ -35,12 +35,12 @@ Creating a presentation is one API call to one endpoint — `POST /api/decks/{de
 At least one of the two must be present — sending neither returns a `400` ("Provide homeowner or prospect_id"). The request returns a presentation URL immediately. The link is live as soon as you get it — narration audio may still be rendering in the background for a short while, and you can [check on that](#step-4-share-the-link) if you want to wait until everything is ready.
 
 <Note>
-  **How this relates to prospects in Demand IQ.** Every presentation is linked to a Demand IQ prospect record. Send `prospect_id` alone and Sales CoPilot personalizes the presentation from that existing prospect's contact info. Send `homeowner` details alone and Sales CoPilot creates a new prospect record in Demand IQ for you as part of the same call. Send both and Sales CoPilot attaches the existing prospect to the presentation but takes the homeowner fields you send as authoritative.
+  **How this relates to prospects in Demand IQ.** Every presentation is linked to a Demand IQ prospect record. Send `prospect_id` alone and AI Presentations personalizes the presentation from that existing prospect's contact info. Send `homeowner` details alone and AI Presentations creates a new prospect record in Demand IQ for you as part of the same call. Send both and AI Presentations attaches the existing prospect to the presentation but takes the homeowner fields you send as authoritative.
 </Note>
 
 ## What you'll need
 
-1. **A Sales CoPilot account.** Your organization must be provisioned — if you're not sure, ask your Demand IQ account manager.
+1. **A AI Presentations account.** Your organization must be provisioned — if you're not sure, ask your Demand IQ account manager.
 2. **An API key**, generated from the dashboard. Covered in [Step 1](#step-1-generate-an-api-key).
 3. **A template with slides.** Presentations are created _from_ a template (the API calls it a **deck**). The template must have at least one slide. Creating a presentation from an empty template returns a `400` ("Deck has no slides"). If the template's slides are still being generated, the request returns a `409` with code `DECK_GENERATING` instead — a presentation is a permanent snapshot of the template at creation time, so one taken mid-generation would be permanently missing slides. Retry once generation completes.
 4. **Your template's deck ID.** Covered in [Step 2](#step-2-find-your-deck-id).
@@ -57,7 +57,7 @@ API keys are generated in the Demand IQ dashboard, not created over the API:
 
 1. Log in at `app.demand-iq.com` and go to **Settings → Company → API Keys** (`/company/settings/apiKeys`).
 2. Click **Add New API Key**.
-3. Choose what you'll use it for. None of the presets are specifically about presentations, so pick **Custom**. Sales CoPilot forwards your API key to Demand IQ to look up or create the prospect on your behalf, so your key needs the underlying prospect permissions. Check **Write Prospects** if you'll [send prospect details](#sending-prospect-details-homeowner) (a new Demand IQ prospect gets created for the presentation). Check **Read Prospects** if you'll [send an existing `prospect_id`](#sending-a-prospect-id-prospect_id) or use both fields together. If you'll use both paths interchangeably, check both. A `401` with code `CORE_AUTH_REJECTED` at request time means one of these scopes is missing (or the credential expired).
+3. Choose what you'll use it for. None of the presets are specifically about presentations, so pick **Custom**. AI Presentations forwards your API key to Demand IQ to look up or create the prospect on your behalf, so your key needs the underlying prospect permissions. Check **Write Prospects** if you'll [send prospect details](#sending-prospect-details-homeowner) (a new Demand IQ prospect gets created for the presentation). Check **Read Prospects** if you'll [send an existing `prospect_id`](#sending-a-prospect-id-prospect_id) or use both fields together. If you'll use both paths interchangeably, check both. A `401` with code `CORE_AUTH_REJECTED` at request time means one of these scopes is missing (or the credential expired).
 4. Give it a name (e.g. "Zapier — presentation links") and confirm the expiration date. Keys default to expiring two years out; pick sooner if you'd rather rotate more often.
 5. Click **Create**, then **copy the key immediately** — it's shown only once and can't be retrieved again later.
 
@@ -158,10 +158,10 @@ Both return the same response, immediately:
 | `zip`        | **Yes**  | Required by Demand IQ's prospect lookup                         |
 | `last_name`  | No       |                                                                 |
 | `country`    | No       | Two-letter ISO code, e.g. `"US"`. Defaults to `"US"` if omitted |
-| `email`      | No       | Needed if you want Sales CoPilot to email the link              |
+| `email`      | No       | Needed if you want AI Presentations to email the link              |
 | `phone`      | No       |                                                                 |
 
-Behind the scenes, Sales CoPilot creates a new prospect record in Demand IQ from these details as part of this same call, using **your** API key. That's why the key needs **Write Prospects** for this path, and it's why `state` and `zip` are required here (Demand IQ's own prospect API needs them) even though they aren't required on the `prospect_id` path. If Demand IQ rejects the address or contact info, you'll get a `422` with code `PROSPECT_CREATE_FAILED`; if Demand IQ rejects the credential itself, a `401` with code `CORE_AUTH_REJECTED` (check the scopes on your API key); if Demand IQ is unreachable, a `503`. Separately, Sales CoPilot also validates the address via Google Geocoding when it builds the presentation — a `422` with code `INVALID_ADDRESS` means that step couldn't resolve it to a real location. Either way, check for typos.
+Behind the scenes, AI Presentations creates a new prospect record in Demand IQ from these details as part of this same call, using **your** API key. That's why the key needs **Write Prospects** for this path, and it's why `state` and `zip` are required here (Demand IQ's own prospect API needs them) even though they aren't required on the `prospect_id` path. If Demand IQ rejects the address or contact info, you'll get a `422` with code `PROSPECT_CREATE_FAILED`; if Demand IQ rejects the credential itself, a `401` with code `CORE_AUTH_REJECTED` (check the scopes on your API key); if Demand IQ is unreachable, a `503`. Separately, AI Presentations also validates the address via Google Geocoding when it builds the presentation — a `422` with code `INVALID_ADDRESS` means that step couldn't resolve it to a real location. Either way, check for typos.
 
 <Note>
 If your template uses pricing formulas, you can pass values for its price variables in a `price_inputs` object alongside `homeowner` (e.g. `"price_inputs": {"system_size_kw": 8.4}`). Missing variables don't cause an error — the price is deferred and the slide shows a placeholder until values are available. Only variables that a pricing formula on the deck's current slides references count here; variables left over from a removed product slide are ignored.
@@ -207,14 +207,14 @@ curl https://presentations.demand-iq.com/api/presentations/{presentationId}/stat
 }
 ```
 
-`status` moves through `pending` → `generating` → `ready` (a `not_started` status means generation kicks off when the prospect opens the link — the link is still ready to share). Once you have the URL, deliver it however you reach your prospects: text, email, a CRM field, or let Sales CoPilot send it (see [Notifications](/sales-copilot/guides/notifications) for delivery and open tracking).
+`status` moves through `pending` → `generating` → `ready` (a `not_started` status means generation kicks off when the prospect opens the link — the link is still ready to share). Once you have the URL, deliver it however you reach your prospects: text, email, a CRM field, or let AI Presentations send it (see [Notifications](/ai-presentations/guides/notifications) for delivery and open tracking).
 
-Deliver the URL exactly as returned. The path segment after `/p/` is the presentation's UUID, and Sales CoPilot validates its format before looking anything up. A truncated or otherwise malformed link returns a 404 page.
+Deliver the URL exactly as returned. The path segment after `/p/` is the presentation's UUID, and AI Presentations validates its format before looking anything up. A truncated or otherwise malformed link returns a 404 page.
 
 When the URL is pasted into SMS, iMessage, Slack, or similar apps, it unfurls into a rich preview: the deck name as the title, the deck description, your company name from branding, and the presentation's first slide as the preview image. Everything is derived automatically from the template — nothing to configure. If the deck has no description or first-slide image, the preview falls back to the template's intro background and default text. Unknown, deleted, or malformed links render no preview.
 
 ## What's next
 
-- [Notifications](/sales-copilot/guides/notifications) — have Sales CoPilot email the link for you, get webhooks when the prospect opens it, and track engagement
-- [API Quickstart](/sales-copilot/api-quickstart) — build the template itself over the API: create a deck, generate narrated slides from images, set branding
+- [Notifications](/ai-presentations/guides/notifications) — have AI Presentations email the link for you, get webhooks when the prospect opens it, and track engagement
+- [API Quickstart](/ai-presentations/api-quickstart) — build the template itself over the API: create a deck, generate narrated slides from images, set branding
 - **API Reference** — full request/response details for every endpoint, in the sidebar

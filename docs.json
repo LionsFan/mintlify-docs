@@ -25,27 +25,27 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Sales CoPilot",
+        "tab": "AI Presentations",
         "groups": [
           {
             "group": "Overview",
             "pages": [
-              "sales-copilot/introduction",
-              "sales-copilot/quickstart",
-              "sales-copilot/api-quickstart"
+              "ai-presentations/introduction",
+              "ai-presentations/quickstart",
+              "ai-presentations/api-quickstart"
             ]
           },
           {
             "group": "Guides",
             "pages": [
-              "sales-copilot/guides/deck-types",
-              "sales-copilot/guides/presentation-url-api",
-              "sales-copilot/guides/branding",
-              "sales-copilot/guides/faqs",
-              "sales-copilot/guides/narration",
-              "sales-copilot/guides/contracts",
-              "sales-copilot/guides/notifications",
-              "sales-copilot/guides/knowledge-base"
+              "ai-presentations/guides/deck-types",
+              "ai-presentations/guides/presentation-url-api",
+              "ai-presentations/guides/branding",
+              "ai-presentations/guides/faqs",
+              "ai-presentations/guides/narration",
+              "ai-presentations/guides/contracts",
+              "ai-presentations/guides/notifications",
+              "ai-presentations/guides/knowledge-base"
             ]
           },
           {
@@ -58,5 +58,11 @@
   },
   "footerSocials": {
     "github": "https://github.com/Demand-IQ"
-  }
+  },
+  "redirects": [
+    {
+      "source": "/sales-copilot/:slug*",
+      "destination": "/ai-presentations/:slug*"
+    }
+  ]
 }

@@ -3,11 +3,11 @@ title: Notifications
 description: Subscribe to presentation events via webhooks or email, send presentation emails to homeowners, and track opens in real time.
 ---
 
-Notifications let you know when something happens during a presentation — a viewer opens it, watches a slide, books an appointment, or signs a contract. You subscribe to specific event types and Sales CoPilot delivers them to your webhook endpoint, email inbox, or console log. Sales CoPilot can also send the presentation link to homeowners on your behalf and emit events when the email is sent, opened, or fails to reach the inbox.
+Notifications let you know when something happens during a presentation — a viewer opens it, watches a slide, books an appointment, or signs a contract. You subscribe to specific event types and AI Presentations delivers them to your webhook endpoint, email inbox, or console log. AI Presentations can also send the presentation link to homeowners on your behalf and emit events when the email is sent, opened, or fails to reach the inbox.
 
 ## Event types
 
-Sales CoPilot emits these events:
+AI Presentations emits these events:
 
 | Event type | Fired when |
 |------------|------------|
@@ -18,14 +18,14 @@ Sales CoPilot emits these events:
 | `question.asked` | A viewer asks a question and the AI answers confidently |
 | `question.escalated` | A viewer asks a question the AI could not confidently answer (either it deflected to a human callback, or it hedged with a low-confidence answer). Emitted **instead of** `question.asked`, never both |
 | `appointment.booked` | A viewer books an appointment |
-| `email.sent` | Sales CoPilot sends a presentation email to a homeowner |
+| `email.sent` | AI Presentations sends a presentation email to a homeowner |
 | `email.opened` | A homeowner opens a presentation email (reported by SendGrid) |
 | `email.bounced` | The homeowner's mail server rejected or blocked the presentation email |
 | `email.dropped` | SendGrid suppressed the email before sending, for example because the address previously bounced or unsubscribed |
 | `email.complained` | The homeowner marked the presentation email as spam |
 | `email.unsubscribed` | The homeowner unsubscribed from your emails |
 
-Each event includes the `presentationId` and relevant context. For example, `slide.viewed` includes the slide ID and how long the viewer spent on it. Sales CoPilot records every slide exit, including fast flips. A view under 2 seconds carries `skipped: true`, so you can measure which slides viewers skip and filter skips out of dwell-time metrics. Both `email.sent` and `email.opened` include the delivery attempt ID (`deliveryId`) so you can correlate opens back to a specific send.
+Each event includes the `presentationId` and relevant context. For example, `slide.viewed` includes the slide ID and how long the viewer spent on it. AI Presentations records every slide exit, including fast flips. A view under 2 seconds carries `skipped: true`, so you can measure which slides viewers skip and filter skips out of dwell-time metrics. Both `email.sent` and `email.opened` include the delivery attempt ID (`deliveryId`) so you can correlate opens back to a specific send.
 
 Event payloads carry identifiers, never contact details. No event payload includes a homeowner's email address, phone number, or name. The one exception is `question.asked` / `question.escalated`, whose payloads include the question and answer text for 90 days (see [Event retention](#event-retention)). When you query the event log, `email.sent` entries include a top-level `recipientEmail` field alongside the payload so you can still see who received each send.
 
@@ -33,19 +33,19 @@ The four email failure events (`email.bounced`, `email.dropped`, `email.complain
 
 `question.escalated` carries the same payload shape as `question.asked` plus an `escalationReason` field: `no_answer` when the AI deflected to a human callback, or `low_confidence` when the AI answered but flagged the answer as uncertain. Any given question emits exactly one of `question.asked` or `question.escalated`, so a single question never triggers two notifications.
 
-The `question.asked` payload can also include an optional `degradedReason` field: `no_client`, `request_failed`, `empty_response`, or `invalid_response`. It is set when the viewer received a canned answer because of a temporary issue on Sales CoPilot's side, not a gap in your content. These answers never emit `question.escalated`, so no one on your team is asked to follow up. The field is additive and optional, so existing consumers are unaffected.
+The `question.asked` payload can also include an optional `degradedReason` field: `no_client`, `request_failed`, `empty_response`, or `invalid_response`. It is set when the viewer received a canned answer because of a temporary issue on AI Presentations's side, not a gap in your content. These answers never emit `question.escalated`, so no one on your team is asked to follow up. The field is additive and optional, so existing consumers are unaffected.
 
 #### Deck and slide identity on question events
 
 `question.asked` and `question.escalated` carry four optional fields that identify the template and slide the question was asked on: `deckId`, `deckSlideId`, `slideTitle`, and `slideIndex` (the slide's 0-based position, the same base as `slide.viewed`'s `slideIndex`). The payload's `slideId` identifies a slide within a single presentation, so it can't be compared across presentations. `deckId` and `deckSlideId` can, which lets you answer questions like "which slide draws the most questions across this template".
 
-Sales CoPilot resolves these fields on the server from the presentation itself, never from the request. Each field is omitted when it can't be resolved — for example, `deckId` is absent once the template has been deleted. Questions asked outside a presentation (in the template editor or preview) carry none of these fields.
+AI Presentations resolves these fields on the server from the presentation itself, never from the request. Each field is omitted when it can't be resolved — for example, `deckId` is absent once the template has been deleted. Questions asked outside a presentation (in the template editor or preview) carry none of these fields.
 
 These fields ship as payload version 2. The webhook envelope's `event_version` is `2` for events that carry them and `1` for older entries, where the fields were never recorded. The change is additive: version 1 payloads are unchanged, and existing consumers keep working without modification.
 
 ## Create a subscription
 
-Sales CoPilot provisions a default set of email subscriptions for your organization the first time a user signs in, so the standard "someone opened your presentation" and "someone asked your AI a question" emails start working without any setup. When new event types ship, they're added to existing organizations on the next sign-in and inherit the org's prevailing posture — if you've muted every other email, the new type is muted too.
+AI Presentations provisions a default set of email subscriptions for your organization the first time a user signs in, so the standard "someone opened your presentation" and "someone asked your AI a question" emails start working without any setup. When new event types ship, they're added to existing organizations on the next sign-in and inherit the org's prevailing posture — if you've muted every other email, the new type is muted too.
 
 To add or change recipients, open the **Settings** tab in the template editor. You can also create subscriptions via the API.
 
@@ -66,7 +66,7 @@ Sends an HTTP POST request to your URL with the event payload as JSON.
 Channel config:
 ```json
 {
-  "url": "https://your-server.com/webhooks/sales-copilot",
+  "url": "https://your-server.com/webhooks/ai-presentations",
   "headers": {
     "Authorization": "Bearer your-secret-token"
   }
@@ -114,9 +114,9 @@ Logs events to the server console. Useful for development and debugging.
 
 ## Event log
 
-Sales CoPilot keeps a log of all events for your organization. You can query the log to see what happened during a presentation, filter by event type, or look at events within a time range.
+AI Presentations keeps a log of all events for your organization. You can query the log to see what happened during a presentation, filter by event type, or look at events within a time range.
 
-For `email.sent` events, each entry includes a top-level `recipientEmail` field. Sales CoPilot resolves it from the delivery attempt referenced by the payload's `deliveryId`; the stored payload itself never contains the address.
+For `email.sent` events, each entry includes a top-level `recipientEmail` field. AI Presentations resolves it from the delivery attempt referenced by the payload's `deliveryId`; the stored payload itself never contains the address.
 
 The event log supports filtering by:
 
@@ -128,15 +128,15 @@ The event log supports filtering by:
 
 ### Event retention
 
-Event log entries keep their full payloads for 90 days. After that, Sales CoPilot archives each entry and reduces its payload to identifier and classification fields — for example `presentationId`, `slideIndex`, `durationMs`, the `skipped` flag, `ctaType`, and delivery status. The entry itself stays in the log, so activity timelines keep their full history, and skip-rate and dwell-time metrics stay consistent for the life of the presentation.
+Event log entries keep their full payloads for 90 days. After that, AI Presentations archives each entry and reduces its payload to identifier and classification fields — for example `presentationId`, `slideIndex`, `durationMs`, the `skipped` flag, `ctaType`, and delivery status. The entry itself stays in the log, so activity timelines keep their full history, and skip-rate and dwell-time metrics stay consistent for the life of the presentation.
 
 Archived entries carry an `archivedAt` timestamp. For `question.asked` and `question.escalated`, the question and answer text is removed when the entry is archived; the classification fields (such as `answerSource` and `escalationReason`) and the deck and slide identity fields (`deckId`, `deckSlideId`, `slideTitle`, `slideIndex`) remain, so per-slide question metrics stay consistent past the 90-day window. Archived entries are deleted from the log entirely after two years.
 
-Sales CoPilot keeps an internal archive copy of each entry's original payload for 9 months after archiving, then deletes it. No raw question or answer text remains in any store Sales CoPilot controls more than 12 months after the event occurred.
+AI Presentations keeps an internal archive copy of each entry's original payload for 9 months after archiving, then deletes it. No raw question or answer text remains in any store AI Presentations controls more than 12 months after the event occurred.
 
 ### Q&A answer retention
 
-When a homeowner asks a question during a presentation, Sales CoPilot caches the generated answer, along with its spoken audio, so similar questions on the same deck can be answered instantly. Cached answers follow the same retention limits as the event log. Sales CoPilot deletes a cached answer after 90 days without use, or 12 months after it was created, whichever comes first. The spoken audio is deleted with it. Expiry has no visible effect during presentations: the next matching question generates a fresh answer.
+When a homeowner asks a question during a presentation, AI Presentations caches the generated answer, along with its spoken audio, so similar questions on the same deck can be answered instantly. Cached answers follow the same retention limits as the event log. AI Presentations deletes a cached answer after 90 days without use, or 12 months after it was created, whichever comes first. The spoken audio is deleted with it. Expiry has no visible effect during presentations: the next matching question generates a fresh answer.
 
 ## Managing subscriptions
 
@@ -144,7 +144,7 @@ You can enable, disable, update, or delete subscriptions at any time. Disabling 
 
 ## Automated email delivery
 
-Sales CoPilot emails the presentation link directly to homeowners when a presentation is created from a journey ingest, and on demand when you call the send endpoint. Each deck has its own delivery configuration with a custom sender name, reply-to address, subject line, body template, and CTA label. Every send is recorded as a delivery attempt regardless of outcome.
+AI Presentations emails the presentation link directly to homeowners when a presentation is created from a journey ingest, and on demand when you call the send endpoint. Each deck has its own delivery configuration with a custom sender name, reply-to address, subject line, body template, and CTA label. Every send is recorded as a delivery attempt regardless of outcome.
 
 A send is `skipped` only when the homeowner record has no email address (manual sends with override recipients bypass that check). There is no separate enable toggle — if a deck is connected to a journey or you call the send endpoint, the email goes out.
 
@@ -157,9 +157,9 @@ Trigger a send (or resend) for a specific presentation:
 
 - `POST /api/presentations/{presentationId}/send` — send the homeowner email using the deck's delivery config. Optionally pass `{ "emails": ["..."] }` to override the default recipients. Returns a `delivery_id` and a status of `sent`, `skipped`, or `failed`. If the presentation's own generation failed, the send is refused with a `409` and code `PRESENTATION_FAILED` — there's nothing usable to deliver.
 
-Each send emits an `email.sent` event. When SendGrid reports the recipient has opened the message, Sales CoPilot records the open and emits an `email.opened` event — subscribe to it from your existing notification subscriptions to track opens in real time. `email.opened` fires once per delivery, on the first open SendGrid reports. Opens triggered by mail-client privacy features (such as Apple Mail Privacy Protection prefetching images) count as opens.
+Each send emits an `email.sent` event. When SendGrid reports the recipient has opened the message, AI Presentations records the open and emits an `email.opened` event — subscribe to it from your existing notification subscriptions to track opens in real time. `email.opened` fires once per delivery, on the first open SendGrid reports. Opens triggered by mail-client privacy features (such as Apple Mail Privacy Protection prefetching images) count as opens.
 
-Sales CoPilot also records every delivery outcome SendGrid reports, including delivered, deferred, bounced, dropped, spam report, unsubscribe, and click events. Failures that need your attention emit their own events: `email.bounced`, `email.dropped`, `email.complained`, and `email.unsubscribed`. Subscribe to them to find out when a presentation email never reached the homeowner or when a homeowner opts out. There is no `email.delivered` event; `email.sent` already covers the send itself.
+AI Presentations also records every delivery outcome SendGrid reports, including delivered, deferred, bounced, dropped, spam report, unsubscribe, and click events. Failures that need your attention emit their own events: `email.bounced`, `email.dropped`, `email.complained`, and `email.unsubscribed`. Subscribe to them to find out when a presentation email never reached the homeowner or when a homeowner opts out. There is no `email.delivered` event; `email.sent` already covers the send itself.
 
 ## API reference
 

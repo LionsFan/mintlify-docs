@@ -1,6 +1,6 @@
 ---
-name: Sync API Docs from Sales CoPilot
-description: Updates documentation when a release ships in the Sales CoPilot repo
+name: Sync API Docs from AI Presentations
+description: Updates documentation when a release ships in the AI Presentations repo
 on:
   push:
     - repo: Demand-IQ/ai-presentations-demo
@@ -29,9 +29,9 @@ When a release merge is present, document the API surface as of that release, co
 
 ## Scope
 
-Only generate documentation for **Sales CoPilot**. Do not create documentation for Journeys, even when Journeys-related code is added or changed in `Demand-IQ/ai-presentations-demo`. Specifically:
+Only generate documentation for **AI Presentations**. Do not create documentation for Journeys, even when Journeys-related code is added or changed in `Demand-IQ/ai-presentations-demo`. Specifically:
 
 - Do not create or restore any Journeys pages or a Journeys navigation tab.
 - Do not document Journeys-specific endpoints, including `POST /api/decks/{deckId}/ingest` (journey ingest). Never add them to `openapi.json`, and do not create pages for them.
 
-This exclusion is about standalone Journeys documentation. Sales CoPilot features that integrate with journeys (for example, journey-backed product slides) are still in scope and should be documented as part of Sales CoPilot.
+This exclusion is about standalone Journeys documentation. AI Presentations features that integrate with journeys (for example, journey-backed product slides) are still in scope and should be documented as part of AI Presentations.
