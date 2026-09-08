@@ -1,9 +1,9 @@
 ---
 title: Setting up your first template
-description: Upload your slide images and let Sales CoPilot build a narrated presentation from them.
+description: Upload your slide images and let AI Presentations build a narrated presentation from them.
 ---
 
-A template is the starting point for everything in Sales CoPilot. It holds your slides, narration, FAQs, and branding. Once a template is set up, you can generate as many personalized presentations from it as you need — one per homeowner.
+A template is the starting point for everything in AI Presentations. It holds your slides, narration, FAQs, and branding. Once a template is set up, you can generate as many personalized presentations from it as you need — one per homeowner.
 
 ## Create a template
 
@@ -13,7 +13,7 @@ A dialog will open with the following fields:
 
 - **Template Name** — give it a clear name you'll recognize, like "Spring Roofing Pitch" or "Solar Q4 2025"
 - **Description** — optional, for your own reference
-- **Template Context** — describe who this template is for and what it covers. This helps Sales CoPilot write better narration. For example: *"Residential roofing replacement for storm-damage leads. Audience: homeowners aged 40–65 in the Southeast US."* The more specific, the better.
+- **Template Context** — describe who this template is for and what it covers. This helps AI Presentations write better narration. For example: *"Residential roofing replacement for storm-damage leads. Audience: homeowners aged 40–65 in the Southeast US."* The more specific, the better.
 - **Use Premium Voice AI** — toggle this on if you want higher quality voice generation
 
 ## Upload your slide images
@@ -26,11 +26,11 @@ Once you've added at least one image and filled in the template name, the **Crea
 
 ## While it's generating
 
-Sales CoPilot will analyze each image, write a narration script, and generate spoken audio. This runs in the background, and you can follow the progress everywhere the template appears:
+AI Presentations will analyze each image, write a narration script, and generate spoken audio. This runs in the background, and you can follow the progress everywhere the template appears:
 
 - **In the editor**, each slide appears in the rail as it finishes — the slide being written shows *Generating…* and the ones behind it show *Queued*. You can review and edit slides as soon as they land, without waiting for the whole template.
 - **On the Templates page**, the template card shows generation progress until the job finishes.
-- **In the FAQs tab**, Sales CoPilot writes suggested FAQs from your slides after the last slide completes, and the tab says so while that's running.
+- **In the FAQs tab**, AI Presentations writes suggested FAQs from your slides after the last slide completes, and the tab says so while that's running.
 
 A template can't be used to create presentations until generation finishes — a presentation is a permanent snapshot of the template at the moment it's created, so one made from a half-built template would be permanently missing slides. The template picker keeps a generating template disabled and explains why; the API returns a `409` with code `DECK_GENERATING` for the same reason.
 
@@ -50,13 +50,13 @@ Slides can be reordered by dragging them into the order you want.
 
 ## Preview your template
 
-Click **Preview** in the editor toolbar to open the template in a new tab and watch it the way a homeowner would. If the narration audio is out of date, Sales CoPilot regenerates it first and opens the preview once it's ready.
+Click **Preview** in the editor toolbar to open the template in a new tab and watch it the way a homeowner would. If the narration audio is out of date, AI Presentations regenerates it first and opens the preview once it's ready.
 
 The **Preview** button stays disabled with an *Add a slide to preview* hint until the template has at least one slide. If you open a preview link for a template with no slides, the page tells you to add at least one slide in the editor and open the preview again.
 
 ## Add a slide manually
 
-Click **Add Slide** in the deck editor to insert a blank slide. Sales CoPilot creates the slide immediately with the placeholder title *Untitled slide* and no narration script, so navigating away or switching tabs won't discard it.
+Click **Add Slide** in the deck editor to insert a blank slide. AI Presentations creates the slide immediately with the placeholder title *Untitled slide* and no narration script, so navigating away or switching tabs won't discard it.
 
 Blank slides are surfaced two ways in the editor so they're easy to spot:
 
@@ -125,7 +125,7 @@ These controls only apply to custom cards. When a slide's content source is **Jo
 
 ## Journey-backed product slides
 
-Product pricing slides can pull their content from a Demand IQ journey so product names, prices, monthly payments, highlights, and images come directly from the live journey instead of being maintained manually. In the product slide editor, set **Content Source** to **Journeys** (the default is **Custom**). Sales CoPilot detects the product type automatically — there is no profile to pick.
+Product pricing slides can pull their content from a Demand IQ journey so product names, prices, monthly payments, highlights, and images come directly from the live journey instead of being maintained manually. In the product slide editor, set **Content Source** to **Journeys** (the default is **Custom**). AI Presentations detects the product type automatically — there is no profile to pick.
 
 While a slide is set to Journeys, the **Product Cards** section is hidden entirely: journey data fills each product's name, price, description, highlights, and image when the presentation is created, so there is nothing to configure per card. Each card's tier badge (for example, *"Good"* or *"Recommended"*) comes from the label configured on the journey option; options without a configured label show no badge. Switch back to **Custom** to edit the product cards manually again. Fields outside the product cards (narration, CTA copy, supporting imagery) remain editable either way.
 
@@ -137,6 +137,6 @@ Product data for a slide is available via `GET /api/slides/{slideId}/product-dat
 
 With your slides in place, set up your branding and FAQs before creating presentations:
 
-- [Branding](/sales-copilot/guides/branding) — your colors, logo, and the landing page homeowners see first
-- [FAQs](/sales-copilot/guides/faqs) — pre-built answers to common questions
-- [Notifications](/sales-copilot/guides/notifications) — configure automated email delivery and subscribe to presentation events
+- [Branding](/ai-presentations/guides/branding) — your colors, logo, and the landing page homeowners see first
+- [FAQs](/ai-presentations/guides/faqs) — pre-built answers to common questions
+- [Notifications](/ai-presentations/guides/notifications) — configure automated email delivery and subscribe to presentation events

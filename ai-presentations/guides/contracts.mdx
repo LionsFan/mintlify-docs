@@ -3,11 +3,11 @@ title: Contracts & e-signature
 description: Import contract templates, configure signing requirements, and collect typed signatures during presentations.
 ---
 
-Contracts let homeowners sign agreements directly inside a presentation. You upload a contract document, Sales CoPilot converts it to a template with variable placeholders, and viewers sign with a typed signature at the end of the presentation.
+Contracts let homeowners sign agreements directly inside a presentation. You upload a contract document, AI Presentations converts it to a template with variable placeholders, and viewers sign with a typed signature at the end of the presentation.
 
 ## How it works
 
-1. **Import** a contract (PDF or Word) — Sales CoPilot analyzes the full document and identifies variables like names, dates, and addresses
+1. **Import** a contract (PDF or Word) — AI Presentations analyzes the full document and identifies variables like names, dates, and addresses
 2. **Edit the template** — refine the markdown template, add disclosures, and configure signing requirements
 3. **Publish** — once published, the contract appears as a signing step in the presentation
 4. **Viewer signs** — the homeowner reviews the contract with their details filled in, types their name as a signature, and submits
@@ -18,7 +18,7 @@ Signed documents are stored with a full audit trail including timestamp, user ag
 
 In the template editor, open the **Actions** tab and click **Import Contract**.
 
-Upload a PDF or Word document (max 10 MB). Both modern (`.docx`) and legacy (`.doc`) Word formats are supported. Sales CoPilot converts legacy `.doc` files to `.docx` automatically before analysis. Sales CoPilot uses AI to analyze the entire document and convert it to a markdown template, preserving all sections, clauses, and legal language rather than summarizing. It detects variables like `{{full_name}}` and `{{address}}` that get replaced with the homeowner's real information when the contract is presented.
+Upload a PDF or Word document (max 10 MB). Both modern (`.docx`) and legacy (`.doc`) Word formats are supported. AI Presentations converts legacy `.doc` files to `.docx` automatically before analysis. AI Presentations uses AI to analyze the entire document and convert it to a markdown template, preserving all sections, clauses, and legal language rather than summarizing. It detects variables like `{{full_name}}` and `{{address}}` that get replaced with the homeowner's real information when the contract is presented.
 
 After import, you'll see:
 - The generated **markdown template** — editable
@@ -67,7 +67,7 @@ When a viewer reaches the signing step:
 
 ## Multiple contract templates per template
 
-A template can have multiple action configs (contract templates), but only one should be published at a time. Pass the `configId` of the template you want to sign against when calling the signing endpoint. If you omit `configId`, Sales CoPilot signs against a built-in default template — set `configId` explicitly to use your template's published contract.
+A template can have multiple action configs (contract templates), but only one should be published at a time. Pass the `configId` of the template you want to sign against when calling the signing endpoint. If you omit `configId`, AI Presentations signs against a built-in default template — set `configId` explicitly to use your template's published contract.
 
 ## API reference
 

@@ -3,7 +3,7 @@ title: API Quickstart
 description: Create and send a personalized presentation to a homeowner using the REST API.
 ---
 
-This guide walks through the same flow as the [Quickstart](/sales-copilot/quickstart) — build a template, generate narrated slides, and send a homeowner their personalized presentation link — but entirely over the REST API. Use it as the starting point for integrating Sales CoPilot into your own CRM, lead platform, or backend.
+This guide walks through the same flow as the [Quickstart](/ai-presentations/quickstart) — build a template, generate narrated slides, and send a homeowner their personalized presentation link — but entirely over the REST API. Use it as the starting point for integrating AI Presentations into your own CRM, lead platform, or backend.
 
 <Note>
 The dashboard calls them **Templates**, but the API uses the original term **deck**. A deck in the API is the same thing as a template in the UI. A **presentation** is a personalized instance of a deck, created for one homeowner.
@@ -11,7 +11,7 @@ The dashboard calls them **Templates**, but the API uses the original term **dec
 
 ## Before you start
 
-- Your organization must be provisioned in Sales CoPilot. If you're not sure, contact your Demand IQ account manager.
+- Your organization must be provisioned in AI Presentations. If you're not sure, contact your Demand IQ account manager.
 - You'll need dashboard login credentials — the API authenticates with a session cookie.
 - All requests go to the production base URL: `https://presentations.demand-iq.com`
 
@@ -65,12 +65,12 @@ The response includes the new deck:
 Save the `id` — it's the `{deckId}` used in every request that follows.
 
 <Tip>
-Already have your deck as a PowerPoint file? `POST /api/decks/import?source=pptx` creates the deck and its slides from a `.pptx` file in one call, using each slide's speaker notes as its narration script. It replaces steps 2 and 3 — see [Import a PowerPoint presentation](/sales-copilot/guides/deck-types#import-a-powerpoint-presentation).
+Already have your deck as a PowerPoint file? `POST /api/decks/import?source=pptx` creates the deck and its slides from a `.pptx` file in one call, using each slide's speaker notes as its narration script. It replaces steps 2 and 3 — see [Import a PowerPoint presentation](/ai-presentations/guides/deck-types#import-a-powerpoint-presentation).
 </Tip>
 
 ## Step 3: Generate slides from your images
 
-Send your slide images to the generate endpoint as `multipart/form-data`. Sales CoPilot runs each image through vision analysis, writes a narration script, and synthesizes spoken audio. Images are processed in the order you attach them, and each must be PNG, JPG, or WebP under 10 MB:
+Send your slide images to the generate endpoint as `multipart/form-data`. AI Presentations runs each image through vision analysis, writes a narration script, and synthesizes spoken audio. Images are processed in the order you attach them, and each must be PNG, JPG, or WebP under 10 MB:
 
 ```bash
 curl -b cookies.txt -X POST \
@@ -122,7 +122,7 @@ If `status` comes back `failed`, the `error` field explains why. To review or tw
 
 ## Step 4: Set up branding (recommended)
 
-Branding controls the colors and logo homeowners see throughout the presentation. `palette` and `cta` are required by the schema; the `cta` block ships alongside the branding record but is not what drives the main action button — that label is resolved from the deck's action config (see [Deck types](/sales-copilot/guides/deck-types) and the `action-configs` endpoints in [Contracts](/sales-copilot/guides/contracts)):
+Branding controls the colors and logo homeowners see throughout the presentation. `palette` and `cta` are required by the schema; the `cta` block ships alongside the branding record but is not what drives the main action button — that label is resolved from the deck's action config (see [Deck types](/ai-presentations/guides/deck-types) and the `action-configs` endpoints in [Contracts](/ai-presentations/guides/contracts)):
 
 ```bash
 curl -b cookies.txt -X PUT \
@@ -148,7 +148,7 @@ curl -b cookies.txt -X PUT \
 
 To add a logo or rep avatar, upload the image first with `POST /api/images/upload` (multipart, `file` field; JPG, PNG, WebP, or SVG up to 10 MB) and pass the returned S3 key as `logo` or `avatar`. Deleting an image with `DELETE /api/images/{imageId}` returns `409 Conflict` while any deck or presentation still references it, along with a list of where it's used. Clear those references first.
 
-You can also seed the live Q&A with your own answers — Sales CoPilot matches these during the presentation and responds with your exact wording:
+You can also seed the live Q&A with your own answers — AI Presentations matches these during the presentation and responds with your exact wording:
 
 ```bash
 curl -b cookies.txt -X POST \
@@ -237,6 +237,6 @@ The route is public and cached for 5 minutes. The first entry in `servers` refle
 ## What's next
 
 - **API Reference** — every endpoint in this guide, plus slides, Q&A settings, narration, voices, and activity, is documented in full in the sidebar
-- [Setting up your first template](/sales-copilot/guides/deck-types) — template library, duplication, and personalization tokens
-- [Branding](/sales-copilot/guides/branding) — full walkthrough of every branding option
-- [FAQs](/sales-copilot/guides/faqs) — how to get the most out of the Q&A system
+- [Setting up your first template](/ai-presentations/guides/deck-types) — template library, duplication, and personalization tokens
+- [Branding](/ai-presentations/guides/branding) — full walkthrough of every branding option
+- [FAQs](/ai-presentations/guides/faqs) — how to get the most out of the Q&A system

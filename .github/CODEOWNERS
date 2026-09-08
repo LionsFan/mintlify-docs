@@ -1,6 +1,6 @@
 # No path-specific owners.
 #
 # This previously granted @docs-sync-bot push access to
-# sales-copilot/openapi.json, a raw copy of the upstream spec. That file was
+# ai-presentations/openapi.json, a raw copy of the upstream spec. That file was
 # removed once the API Reference switched to the curated root openapi.json,
 # which is maintained by .mintlify/workflows/sync-api-docs.md.
