@@ -35,6 +35,14 @@ The four email failure events (`email.bounced`, `email.dropped`, `email.complain
 
 The `question.asked` payload can also include an optional `degradedReason` field: `no_client`, `request_failed`, `empty_response`, or `invalid_response`. It is set when the viewer received a canned answer because of a temporary issue on Sales CoPilot's side, not a gap in your content. These answers never emit `question.escalated`, so no one on your team is asked to follow up. The field is additive and optional, so existing consumers are unaffected.
 
+#### Deck and slide identity on question events
+
+`question.asked` and `question.escalated` carry four optional fields that identify the template and slide the question was asked on: `deckId`, `deckSlideId`, `slideTitle`, and `slideIndex` (the slide's 0-based position, the same base as `slide.viewed`'s `slideIndex`). The payload's `slideId` identifies a slide within a single presentation, so it can't be compared across presentations. `deckId` and `deckSlideId` can, which lets you answer questions like "which slide draws the most questions across this template".
+
+Sales CoPilot resolves these fields on the server from the presentation itself, never from the request. Each field is omitted when it can't be resolved — for example, `deckId` is absent once the template has been deleted. Questions asked outside a presentation (in the template editor or preview) carry none of these fields.
+
+These fields ship as payload version 2. The webhook envelope's `event_version` is `2` for events that carry them and `1` for older entries, where the fields were never recorded. The change is additive: version 1 payloads are unchanged, and existing consumers keep working without modification.
+
 ## Create a subscription
 
 Sales CoPilot provisions a default set of email subscriptions for your organization the first time a user signs in, so the standard "someone opened your presentation" and "someone asked your AI a question" emails start working without any setup. When new event types ship, they're added to existing organizations on the next sign-in and inherit the org's prevailing posture — if you've muted every other email, the new type is muted too.
@@ -122,7 +130,7 @@ The event log supports filtering by:
 
 Event log entries keep their full payloads for 90 days. After that, Sales CoPilot archives each entry and reduces its payload to identifier and classification fields — for example `presentationId`, `slideIndex`, `durationMs`, the `skipped` flag, `ctaType`, and delivery status. The entry itself stays in the log, so activity timelines keep their full history, and skip-rate and dwell-time metrics stay consistent for the life of the presentation.
 
-Archived entries carry an `archivedAt` timestamp. For `question.asked` and `question.escalated`, the question and answer text is removed when the entry is archived; the classification fields (such as `answerSource` and `escalationReason`) remain. Archived entries are deleted from the log entirely after two years.
+Archived entries carry an `archivedAt` timestamp. For `question.asked` and `question.escalated`, the question and answer text is removed when the entry is archived; the classification fields (such as `answerSource` and `escalationReason`) and the deck and slide identity fields (`deckId`, `deckSlideId`, `slideTitle`, `slideIndex`) remain, so per-slide question metrics stay consistent past the 90-day window. Archived entries are deleted from the log entirely after two years.
 
 Sales CoPilot keeps an internal archive copy of each entry's original payload for 9 months after archiving, then deletes it. No raw question or answer text remains in any store Sales CoPilot controls more than 12 months after the event occurred.
 

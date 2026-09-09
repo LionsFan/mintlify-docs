@@ -4228,7 +4228,7 @@
           "Q&A"
         ],
         "summary": "Answer a question",
-        "description": "Answers a viewer question. Checks FAQs first (exact then semantic match at >= 0.6 confidence), falls back to GPT-4o with slide context. Returns answer text plus synthesized audio.\n\n`deckId` and `presentationId` must be valid UUIDs; other values are rejected with a 400. If `slideId` doesn't match a slide in the deck, the question is answered without slide context instead of failing.\n\n**Authentication**: Accepts either a session cookie (admin) or a `presentationId` (public viewer).",
+        "description": "Answers a viewer question. Checks FAQs first (exact then semantic match at >= 0.6 confidence), falls back to GPT-4o with slide context. Returns answer text plus synthesized audio.\n\n`deckId` and `presentationId` must be valid UUIDs; other values are rejected with a 400. When a `presentationId` is provided, the answer is drawn from the deck that presentation belongs to; the body's `deckId` is used only as a fallback when that deck has been deleted. If `slideId` doesn't match a slide in the deck, the question is answered without slide context instead of failing.\n\n**Authentication**: Accepts either a session cookie (admin) or a `presentationId` (public viewer).",
         "requestBody": {
           "required": true,
           "content": {
@@ -4252,7 +4252,8 @@
                   },
                   "deckId": {
                     "type": "string",
-                    "format": "uuid"
+                    "format": "uuid",
+                    "description": "Deck to answer from. Ignored when `presentationId` is provided — the deck is resolved from the presentation, and this value is used only as a fallback if that deck has been deleted."
                   },
                   "presentationId": {
                     "type": "string",
