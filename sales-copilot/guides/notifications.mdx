@@ -120,7 +120,7 @@ The event log supports filtering by:
 
 ### Event retention
 
-Event log entries keep their full payloads for 90 days. After that, Sales CoPilot archives each entry and reduces its payload to identifier and classification fields — for example `presentationId`, `slideIndex`, `durationMs`, `ctaType`, and delivery status. The entry itself stays in the log, so activity timelines keep their full history.
+Event log entries keep their full payloads for 90 days. After that, Sales CoPilot archives each entry and reduces its payload to identifier and classification fields — for example `presentationId`, `slideIndex`, `durationMs`, the `skipped` flag, `ctaType`, and delivery status. The entry itself stays in the log, so activity timelines keep their full history, and skip-rate and dwell-time metrics stay consistent for the life of the presentation.
 
 Archived entries carry an `archivedAt` timestamp. For `question.asked` and `question.escalated`, the question and answer text is removed when the entry is archived; the classification fields (such as `answerSource` and `escalationReason`) remain. Archived entries are deleted from the log entirely after two years.
 
