@@ -209,7 +209,9 @@ curl https://presentations.demand-iq.com/api/presentations/{presentationId}/stat
 
 `status` moves through `pending` → `generating` → `ready` (a `not_started` status means generation kicks off when the prospect opens the link — the link is still ready to share). Once you have the URL, deliver it however you reach your prospects: text, email, a CRM field, or let Sales CoPilot send it (see [Notifications](/sales-copilot/guides/notifications) for delivery and open tracking).
 
-When the URL is pasted into SMS, iMessage, Slack, or similar apps, it unfurls into a rich preview: the deck name as the title, the deck description, your company name from branding, and the presentation's first slide as the preview image. Everything is derived automatically from the template — nothing to configure. If the deck has no description or first-slide image, the preview falls back to the template's intro background and default text, and unknown or deleted presentations render no preview.
+Deliver the URL exactly as returned. The path segment after `/p/` is the presentation's UUID, and Sales CoPilot validates its format before looking anything up. A truncated or otherwise malformed link returns a 404 page.
+
+When the URL is pasted into SMS, iMessage, Slack, or similar apps, it unfurls into a rich preview: the deck name as the title, the deck description, your company name from branding, and the presentation's first slide as the preview image. Everything is derived automatically from the template — nothing to configure. If the deck has no description or first-slide image, the preview falls back to the template's intro background and default text. Unknown, deleted, or malformed links render no preview.
 
 ## What's next
 
