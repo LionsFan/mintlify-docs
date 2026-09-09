@@ -4228,7 +4228,7 @@
           "Q&A"
         ],
         "summary": "Answer a question",
-        "description": "Answers a viewer question. Checks FAQs first (exact then semantic match at >= 0.6 confidence), falls back to GPT-4o with slide context. Returns answer text plus synthesized audio.\n\n**Authentication**: Accepts either a session cookie (admin) or a `presentationId` (public viewer).",
+        "description": "Answers a viewer question. Checks FAQs first (exact then semantic match at >= 0.6 confidence), falls back to GPT-4o with slide context. Returns answer text plus synthesized audio.\n\n`deckId` and `presentationId` must be valid UUIDs; other values are rejected with a 400. If `slideId` doesn't match a slide in the deck, the question is answered without slide context instead of failing.\n\n**Authentication**: Accepts either a session cookie (admin) or a `presentationId` (public viewer).",
         "requestBody": {
           "required": true,
           "content": {
@@ -4246,7 +4246,9 @@
                   },
                   "slideId": {
                     "type": "string",
-                    "description": "Current slide ID for context"
+                    "minLength": 1,
+                    "maxLength": 100,
+                    "description": "Current slide ID for context. Accepts a slide UUID or a legacy semantic ID such as `slide-1`."
                   },
                   "deckId": {
                     "type": "string",
