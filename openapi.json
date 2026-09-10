@@ -5243,7 +5243,7 @@
           "Authentication"
         ],
         "summary": "Portal SSO token-bearer exchange",
-        "description": "Token-bearer variant of the SSO flow for cross-origin clients (for example, the portal calling AI Presentations APIs from the browser).\n\nDiffers from `GET /api/auth/sso` in four ways:\n- Accepts the SSO code in a JSON body, not a query parameter\n- Returns the session token in the response body instead of setting a cookie\n- Emits CORS headers so the portal origin can read the response\n- Does not set the embedded or theme cookies (those are iframe-only concerns)\n\nThe returned `token` is the same opaque session ID that backs the cookie flow. Clients send it as `Authorization: Bearer <token>` on subsequent requests.\n\nWhen `spoof` is present, the session is minted for the target company via Core's `loginAs`. Core authorizes the impersonation; a rejection returns `403 spoof_forbidden`. A `spoof` value equal to the authenticating user's own company is treated as a no-op, not an error. The `organization` field in the response reflects the effective (spoof target) tenant. Unlike the GET SSO flow, this endpoint does not revoke prior sessions for the user \u2014 there is no signal to identify the caller's prior bearer session, and revoking all sessions would kill any active iframe session in another tab.\n\nOn success, default email notification subscriptions are provisioned for the authenticating user's own organization before any spoof is applied.",
+        "description": "Token-bearer variant of the SSO flow for cross-origin clients (for example, the portal calling AI Presentations APIs from the browser).\n\nDiffers from `GET /api/auth/sso` in four ways:\n- Accepts the SSO code in a JSON body, not a query parameter\n- Returns the session token in the response body instead of setting a cookie\n- Emits CORS headers so the portal origin can read the response\n- Does not set the embedded or theme cookies (those are iframe-only concerns)\n\nThe returned `token` is the same opaque session ID that backs the cookie flow. Clients send it as `Authorization: Bearer <token>` on subsequent requests.\n\nUnlike the GET SSO flow, this endpoint does not revoke prior sessions for the user.",
         "requestBody": {
           "required": true,
           "content": {
@@ -5257,11 +5257,6 @@
                   "code": {
                     "type": "string",
                     "description": "Short-lived authorization code issued by the portal"
-                  },
-                  "spoof": {
-                    "type": "string",
-                    "format": "uuid",
-                    "description": "Optional company UUID to impersonate. Must be a valid UUID; Core authorizes the impersonation."
                   }
                 }
               }
@@ -5322,7 +5317,7 @@
                     },
                     "organization": {
                       "type": "object",
-                      "description": "Effective tenant \u2014 the spoof target when spoofing, otherwise the user's own company.",
+                      "description": "Organization associated with the session.",
                       "required": [
                         "id",
                         "name"
@@ -5342,7 +5337,7 @@
             }
           },
           "400": {
-            "description": "Missing or invalid `code`, non-UUID `spoof` value, or non-JSON body. Error codes: `invalid_body`, `invalid_request`.",
+            "description": "Missing or invalid `code`, or non-JSON body. Error codes: `invalid_body`, `invalid_request`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5362,7 +5357,7 @@
             }
           },
           "403": {
-            "description": "Request origin not allowed, authenticating user has no associated company (`invalid_user`), or Core rejected the spoof request (`spoof_forbidden`).",
+            "description": "Request origin not allowed or authenticating user has no associated company (`invalid_user`).",
             "content": {
               "application/json": {
                 "schema": {

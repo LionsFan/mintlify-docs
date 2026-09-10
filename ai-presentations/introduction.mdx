@@ -28,10 +28,6 @@ Most API endpoints require a session cookie obtained from `POST /api/auth/login`
 
 For portal integrations, AI Presentations supports SSO via `GET /api/auth/sso?code={authCode}`. The portal redirects users with a short-lived authorization code that is exchanged for an access token server-side. Pass `embedded=1` when running inside an iframe. Pass an optional `theme` parameter (`light` or `dark`) to match the portal appearance on first render. In production, set the `APP_URL` environment variable to the public base URL so that SSO redirects resolve correctly behind a load balancer.
 
-Portal admins with the `DIQAdmin` or `Admin` role can carry a company impersonation into AI Presentations by appending `&spoof={companyId}` to the SSO URL. AI Presentations calls Core's `POST /auth/loginAs/{companyId}` and treats a 200 as the authorization grant. On rejection the user is redirected to `/no-access` rather than the standard SSO error page, so the portal does not retry a request Core will always deny. The deck-picker exchange endpoint (`POST /api/auth/sso/exchange`) accepts the same optional `spoof` field in its JSON body.
-
-When an embedded `DIQAdmin` session opens a deck page that belongs to a different company, such as a portal deep link that carries no company, AI Presentations asks the portal to switch companies instead of rendering the page. It posts a `PRESENTATIONS_SPOOF_REQUIRED` message with the owning company's id to the portal and shows a loading spinner. The portal then re-primes the iframe with `&spoof={companyId}` and the same redirect path, so the second load lands on the same URL scoped to the correct company. This handoff applies only to the `DIQAdmin` role; all other sessions still receive the 404 response from `GET /api/decks/{deckId}`.
-
 ## Get started
 
 <CardGroup cols={2}>

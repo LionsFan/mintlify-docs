@@ -35,3 +35,5 @@ Only generate documentation for **AI Presentations**. Do not create documentatio
 - Do not document Journeys-specific endpoints, including `POST /api/decks/{deckId}/ingest` (journey ingest). Never add them to `openapi.json`, and do not create pages for them.
 
 This exclusion is about standalone Journeys documentation. AI Presentations features that integrate with journeys (for example, journey-backed product slides) are still in scope and should be documented as part of AI Presentations.
+
+Document only externally supported integrations in public pages and OpenAPI schemas. Do not copy internal administrative behavior from application code into public documentation. Preserve existing public integration guidance and maintain internal details separately.
